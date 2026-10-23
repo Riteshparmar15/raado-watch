@@ -1,17 +1,25 @@
 /**
- * RAADO WATCH — Dynamic Watch Catalogue & Theme Controller
+ * RAADO WATCH — Dynamic Watch Catalogue, Theme System & GSAP Motion Controller
  * 
- * Step 2 & Step 3 Implementation:
- * - Dynamic 5-watch catalogue rendering from products-data.js
- * - Real-time category filtering (All, Heritage, Chronograph, Minimal, Luxury, Diver)
- * - Themed modal preview & deep-link navigation to product.html?id=...
- * - Image lightbox & contact inquiry handling
+ * Features:
+ * - Step 5: Advanced GSAP & ScrollTrigger animations (Hero timeline, 3D parallax, scroll reveals)
+ * - Step 6: Real interactions (5-watch dynamic catalogue, category filters, themed modal, contact handling)
+ * - Step 7: Accessibility (WCAG focus states, reduced-motion compliance, keyboard listeners)
+ * - Step 8: Clean lifecycle, error-free DOM bindings, and high performance
  */
 
 document.addEventListener("DOMContentLoaded", () => {
   const catalog = window.WATCH_CATALOG || {};
   const productGrid = document.getElementById("product-grid");
   const filterButtons = document.querySelectorAll(".filter-btn");
+  const siteHeader = document.getElementById("site-header");
+
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const isGSAPAvailable = typeof gsap !== "undefined";
+
+  if (isGSAPAvailable && typeof ScrollTrigger !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger);
+  }
 
   // ==========================================================================
   // 1. Render Product Cards Dynamically
@@ -25,15 +33,17 @@ document.addEventListener("DOMContentLoaded", () => {
       ? watches 
       : watches.filter(w => w.category === filterCategory);
 
-    filtered.forEach(watch => {
+    filtered.forEach((watch, index) => {
       const card = document.createElement("article");
       card.className = "product-card";
       card.setAttribute("data-theme", watch.theme);
       card.setAttribute("id", `card-${watch.id}`);
+      card.setAttribute("tabindex", "0");
+      card.setAttribute("aria-label", `${watch.name}, priced at ${watch.price}`);
 
       card.innerHTML = `
         <div class="product-image-container zoomable-image" data-src="${watch.primaryImage}" data-alt="${watch.name}">
-          <img src="${watch.primaryImage}" alt="${watch.name}" class="product-image" loading="lazy">
+          <img src="${watch.primaryImage}" alt="${watch.name} - ${watch.subtitle}" class="product-image" loading="lazy">
           <span class="product-tag">${watch.categoryLabel}</span>
         </div>
         <div class="product-info">
@@ -43,8 +53,8 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="product-bottom">
             <span class="product-price">${watch.price}</span>
             <div class="product-actions-wrap">
-              <button class="btn btn-small view-modal-btn" data-id="${watch.id}">Quick View</button>
-              <a href="product.html?id=${watch.id}" class="btn btn-small btn-primary">Page &rarr;</a>
+              <button class="btn btn-small view-modal-btn" data-id="${watch.id}" aria-label="Quick preview of ${watch.name}">Quick View</button>
+              <a href="product.html?id=${watch.id}" class="btn btn-small btn-primary" aria-label="Open detailed page for ${watch.name}">Page &rarr;</a>
             </div>
           </div>
         </div>
@@ -53,12 +63,23 @@ document.addEventListener("DOMContentLoaded", () => {
       productGrid.appendChild(card);
     });
 
-    // Reattach listeners to newly created card elements
+    // Reattach interactive listeners
     attachCardListeners();
+
+    // GSAP Card Stagger Animation when filtering or rendering
+    if (isGSAPAvailable && !prefersReducedMotion) {
+      gsap.fromTo(".product-card", 
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: "power2.out" }
+      );
+      if (typeof ScrollTrigger !== "undefined") {
+        ScrollTrigger.refresh();
+      }
+    }
   }
 
   // ==========================================================================
-  // 2. Category Filter Handler
+  // 2. Category Filter Controls
   // ==========================================================================
   filterButtons.forEach(btn => {
     btn.addEventListener("click", () => {
@@ -74,7 +95,121 @@ document.addEventListener("DOMContentLoaded", () => {
   renderCatalogue("all");
 
   // ==========================================================================
-  // 3. Themed Product Modal
+  // 3. Step 5 — Advanced GSAP Animations & Parallax
+  // ==========================================================================
+  if (isGSAPAvailable && !prefersReducedMotion) {
+    // Hero Entrance Timeline
+    const heroTL = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+    heroTL
+      .from(".site-header", {
+        y: -30,
+        opacity: 0,
+        duration: 0.8
+      })
+      .from(".hero-badge", {
+        scale: 0.9,
+        opacity: 0,
+        duration: 0.6
+      }, "-=0.4")
+      .from(".hero-headline", {
+        y: 25,
+        opacity: 0,
+        duration: 0.9
+      }, "-=0.4")
+      .from(".hero-intro", {
+        y: 20,
+        opacity: 0,
+        duration: 0.8
+      }, "-=0.6")
+      .from(".hero-actions", {
+        y: 20,
+        opacity: 0,
+        duration: 0.8
+      }, "-=0.6")
+      .from(".image-frame", {
+        scale: 0.94,
+        opacity: 0,
+        duration: 1.1,
+        ease: "expo.out"
+      }, "-=0.7");
+
+    // Mouse-based 3D perspective parallax on hero watch
+    const heroFrame = document.getElementById("hero-image-frame");
+    const heroSection = document.getElementById("hero");
+
+    if (heroFrame && heroSection && window.innerWidth > 960) {
+      heroSection.addEventListener("mousemove", (e) => {
+        const rect = heroSection.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+        gsap.to(heroFrame, {
+          rotateY: x * 10,
+          rotateX: -y * 10,
+          duration: 0.6,
+          ease: "power1.out",
+          transformPerspective: 1000
+        });
+      });
+
+      heroSection.addEventListener("mouseleave", () => {
+        gsap.to(heroFrame, {
+          rotateY: 0,
+          rotateX: 0,
+          duration: 0.8,
+          ease: "power2.out"
+        });
+      });
+    }
+
+    // ScrollTrigger Sections
+    if (typeof ScrollTrigger !== "undefined") {
+      gsap.from(".collection-section .section-header", {
+        scrollTrigger: {
+          trigger: ".collection-section",
+          start: "top 80%"
+        },
+        y: 35,
+        opacity: 0,
+        duration: 0.9
+      });
+
+      gsap.from(".about-grid", {
+        scrollTrigger: {
+          trigger: ".about-section",
+          start: "top 78%"
+        },
+        y: 40,
+        opacity: 0,
+        duration: 1
+      });
+
+      gsap.from(".contact-card", {
+        scrollTrigger: {
+          trigger: ".contact-section",
+          start: "top 80%"
+        },
+        y: 40,
+        opacity: 0,
+        duration: 0.9
+      });
+    }
+  }
+
+  // Sticky Header Scroll Listener
+  window.addEventListener("scroll", () => {
+    if (siteHeader) {
+      if (window.scrollY > 40) {
+        siteHeader.classList.add("is-scrolled");
+      } else {
+        siteHeader.classList.remove("is-scrolled");
+      }
+    }
+  }, { passive: true });
+
+  // ==========================================================================
+  // 4. Themed Product Quick-View Modal
   // ==========================================================================
   const modal = document.getElementById("product-modal");
   const modalBody = document.getElementById("modal-body");
@@ -84,7 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const watch = catalog[watchId];
     if (!watch || !modal || !modalBody) return;
 
-    // Apply the watch's specific theme to the modal dialog
+    // Apply watch's specific theme to the modal dialog
     modal.setAttribute("data-theme", watch.theme);
 
     let specRowsHtml = "";
@@ -130,10 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.style.overflow = "";
   };
 
-  if (modalCloseBtn) {
-    modalCloseBtn.addEventListener("click", window.closeThemedModal);
-  }
-
+  if (modalCloseBtn) modalCloseBtn.addEventListener("click", window.closeThemedModal);
   if (modal) {
     modal.addEventListener("click", (e) => {
       if (e.target === modal) window.closeThemedModal();
@@ -141,10 +273,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ==========================================================================
-  // 4. Card Event Listeners
+  // 5. Card Listeners Attachment
   // ==========================================================================
   function attachCardListeners() {
-    // Quick View Buttons
     document.querySelectorAll(".view-modal-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-id");
@@ -152,7 +283,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // Zoomable Image Lightbox
     document.querySelectorAll(".zoomable-image").forEach(el => {
       el.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -164,7 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ==========================================================================
-  // 5. Full-Screen Image Lightbox
+  // 6. Full-Screen Image Lightbox
   // ==========================================================================
   const imageLightbox = document.getElementById("image-lightbox");
   const lightboxImg = document.getElementById("lightbox-img");
@@ -195,7 +325,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Close modals on Escape key
+  // Keyboard accessibility: Escape closes any open modal/lightbox
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       if (imageLightbox && imageLightbox.classList.contains("is-open")) {
@@ -207,25 +337,27 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ==========================================================================
-  // 6. Mobile Navigation Menu Toggle
+  // 7. Mobile Navigation Menu Toggle
   // ==========================================================================
   const mobileToggle = document.getElementById("mobile-menu-toggle");
   const navLinks = document.getElementById("nav-links");
 
   if (mobileToggle && navLinks) {
     mobileToggle.addEventListener("click", () => {
-      navLinks.classList.toggle("is-active");
+      const isOpen = navLinks.classList.toggle("is-active");
+      mobileToggle.setAttribute("aria-expanded", String(isOpen));
     });
 
     document.querySelectorAll(".nav-link").forEach(link => {
       link.addEventListener("click", () => {
         navLinks.classList.remove("is-active");
+        mobileToggle.setAttribute("aria-expanded", "false");
       });
     });
   }
 
   // ==========================================================================
-  // 7. Demo Contact Form Submission
+  // 8. Honest Customer Concierge Inquiry Handling (No False Purchases)
   // ==========================================================================
   const contactForm = document.getElementById("contact-form");
   const formStatus = document.getElementById("form-status");
@@ -234,14 +366,23 @@ document.addEventListener("DOMContentLoaded", () => {
     contactForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const nameInput = document.getElementById("contact-name").value.trim();
-      if (!nameInput) return;
+      const emailInput = document.getElementById("contact-email").value.trim();
+      const messageInput = document.getElementById("contact-message").value.trim();
 
-      formStatus.textContent = `Thank you, ${nameInput}! (Demo note: Inquiries are simulated for the RAADO WATCH learning project).`;
+      if (!nameInput || !emailInput || !messageInput) {
+        formStatus.textContent = "Please provide your name, email, and inquiry.";
+        formStatus.style.color = "#dc2626";
+        return;
+      }
+
+      // Step 6 requirement: Do not simulate a purchase; state honest demonstration reception
+      formStatus.style.color = "var(--theme-accent)";
+      formStatus.textContent = `Thank you, ${nameInput}. Your inquiry regarding "${messageInput.slice(0, 30)}..." has been received. (Demonstration Notice: RAADO WATCH is an educational brand; no financial transactions or physical shipments are conducted).`;
       contactForm.reset();
 
       setTimeout(() => {
         formStatus.textContent = "";
-      }, 6000);
+      }, 8000);
     });
   }
 });
