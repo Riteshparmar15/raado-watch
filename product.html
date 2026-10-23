@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">RAADO WATCH — Timepiece Details</title>
+  <meta name="description" content="Detailed horological specifications and bespoke craftsmanship of RAADO WATCH timepieces.">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="index.html#hero" class="brand-logo" id="brand-logo">RAADO <span>WATCH</span></a>
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle navigation menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+      <nav class="nav-links" id="nav-links">
+        <a href="index.html#hero" class="nav-link">Home</a>
+        <a href="index.html#collection" class="nav-link">Collection</a>
+        <a href="index.html#about" class="nav-link">About Us</a>
+        <a href="index.html#contact" class="nav-link">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Dynamic Product Detail Section -->
+  <main class="product-page-section">
+    <div class="container" id="product-container">
+      <!-- Breadcrumb Navigation -->
+      <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="index.html">Home</a>
+        <span>&rsaquo;</span>
+        <a href="index.html#collection">Collection</a>
+        <span>&rsaquo;</span>
+        <span id="breadcrumb-current">Timepiece</span>
+      </nav>
+
+      <!-- Layout Populated by JavaScript -->
+      <div class="product-detail-layout" id="product-layout">
+        <!-- Gallery Column -->
+        <div class="gallery-column">
+          <div class="gallery-main-view">
+            <img src="" alt="" class="gallery-main-img" id="detail-main-img" title="Click to view full screen">
+          </div>
+          <div class="gallery-thumbnails" id="gallery-thumbs">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Details Column -->
+        <div class="product-detail-info">
+          <span class="theme-pill-badge" id="detail-category-badge">Category</span>
+          <h1 class="detail-title" id="detail-name">Watch Name</h1>
+          <div class="detail-subtitle" id="detail-subtitle">Subtitle</div>
+
+          <div class="detail-price-box">
+            <span class="detail-price" id="detail-price">$000</span>
+            <span class="detail-availability">&bull; In Atelier Stock (Demo)</span>
+          </div>
+
+          <p class="detail-description" id="detail-desc">
+            Product narrative and horological summary.
+          </p>
+
+          <div class="specs-section">
+            <h3>Technical Specifications</h3>
+            <table class="specs-table" id="detail-specs-table">
+              <tbody>
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="detail-actions">
+            <a href="index.html#contact" class="btn btn-primary" id="btn-inquire">Inquire About This Model</a>
+            <a href="index.html#collection" class="btn btn-outline">&larr; Back to Catalogue</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error State (If ID not found) -->
+      <div class="product-error-card" id="product-error" style="display: none;">
+        <h2>Timepiece Not Found</h2>
+        <p>The requested watch model could not be located in our catalogue.</p>
+        <a href="index.html#collection" class="btn btn-primary">&larr; Return to All Timepieces</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <p>&copy; 2026 RAADO WATCH (Fictional Demo Brand). All educational rights reserved.</p>
+      <p class="footer-note">Built with HTML5, CSS3, and JavaScript as part of the Open Knowledge Format (OKF) learning project.</p>
+    </div>
+  </footer>
+
+  <!-- Full-Screen Image Lightbox -->
+  <div class="image-lightbox-backdrop" id="image-lightbox" aria-hidden="true" role="dialog" aria-label="Watch Image Inspection">
+    <div class="lightbox-content">
+      <button class="lightbox-close-btn" id="lightbox-close-btn" aria-label="Close image view">&times;</button>
+      <img src="" alt="" class="lightbox-img" id="lightbox-img">
+      <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
+  </div>
+
+  <!-- Centralized Data & Product Page Controller -->
+  <script src="products-data.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const catalog = window.WATCH_CATALOG || {};
+      const params = new URLSearchParams(window.location.search);
+      const watchId = params.get("id") || "classic"; // Defaults to classic if not specified
+      const watch = catalog[watchId];
+
+      const layout = document.getElementById("product-layout");
+      const errorCard = document.getElementById("product-error");
+
+      if (!watch) {
+        if (layout) layout.style.display = "none";
+        if (errorCard) errorCard.style.display = "block";
+        document.title = "Timepiece Not Found — RAADO WATCH";
+        return;
+      }
+
+      // Step 2 & 4: Dynamically apply the watch's specific theme to the HTML root
+      document.documentElement.setAttribute("data-theme", watch.theme);
+      document.body.setAttribute("data-theme", watch.theme);
+
+      // Update Document Title & Breadcrumb
+      document.title = `${watch.name} — RAADO WATCH`;
+      const breadcrumb = document.getElementById("breadcrumb-current");
+      if (breadcrumb) breadcrumb.textContent = watch.name;
+
+      // Populate Headings & Details
+      document.getElementById("detail-category-badge").textContent = watch.categoryLabel;
+      document.getElementById("detail-name").textContent = watch.name;
+      document.getElementById("detail-subtitle").textContent = watch.subtitle;
+      document.getElementById("detail-price").textContent = watch.price;
+      document.getElementById("detail-desc").textContent = watch.description;
+
+      // Populate Main Gallery Image
+      const mainImg = document.getElementById("detail-main-img");
+      if (mainImg) {
+        mainImg.src = watch.primaryImage;
+        mainImg.alt = watch.name;
+        mainImg.addEventListener("click", () => {
+          openLightbox(mainImg.src, watch.name);
+        });
+      }
+
+      // Populate Gallery Thumbnails
+      const thumbsContainer = document.getElementById("gallery-thumbs");
+      if (thumbsContainer && watch.gallery) {
+        thumbsContainer.innerHTML = "";
+        watch.gallery.forEach((imgUrl, idx) => {
+          const thumbBtn = document.createElement("button");
+          thumbBtn.className = `gallery-thumb-btn ${idx === 0 ? "is-active" : ""}`;
+          thumbBtn.setAttribute("aria-label", `View photo ${idx + 1}`);
+          thumbBtn.innerHTML = `<img src="${imgUrl}" alt="${watch.name} view ${idx + 1}">`;
+
+          thumbBtn.addEventListener("click", () => {
+            document.querySelectorAll(".gallery-thumb-btn").forEach(b => b.classList.remove("is-active"));
+            thumbBtn.classList.add("is-active");
+
+            // Fade transition on main image
+            mainImg.style.opacity = "0.4";
+            setTimeout(() => {
+              mainImg.src = imgUrl;
+              mainImg.style.opacity = "1";
+            }, 180);
+          });
+
+          thumbsContainer.appendChild(thumbBtn);
+        });
+      }
+
+      // Populate Specifications Table
+      const specsTableBody = document.querySelector("#detail-specs-table tbody");
+      if (specsTableBody && watch.specs) {
+        specsTableBody.innerHTML = "";
+        for (const [specKey, specVal] of Object.entries(watch.specs)) {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <th>${specKey}</th>
+            <td>${specVal}</td>
+          `;
+          specsTableBody.appendChild(row);
+        }
+      }
+
+      // Lightbox logic
+      const lightbox = document.getElementById("image-lightbox");
+      const lightboxImg = document.getElementById("lightbox-img");
+      const lightboxCaption = document.getElementById("lightbox-caption");
+      const closeBtn = document.getElementById("lightbox-close-btn");
+
+      function openLightbox(src, caption) {
+        lightboxImg.src = src;
+        lightboxCaption.textContent = caption;
+        lightbox.classList.add("is-open");
+        lightbox.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove("is-open");
+        lightbox.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      if (closeBtn) closeBtn.addEventListener("click", closeLightbox);
+      if (lightbox) {
+        lightbox.addEventListener("click", (e) => {
+          if (e.target === lightbox) closeLightbox();
+        });
+      }
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && lightbox.classList.contains("is-open")) {
+          closeLightbox();
+        }
+      });
+
+      // Mobile Menu
+      const mobileToggle = document.getElementById("mobile-menu-toggle");
+      const navLinks = document.getElementById("nav-links");
+      if (mobileToggle && navLinks) {
+        mobileToggle.addEventListener("click", () => {
+          navLinks.classList.toggle("is-active");
+        });
+      }
+    });
+  </script>
+</body>
+</html>

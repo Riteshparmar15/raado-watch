@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="classic">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,20 +12,6 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-  <!-- Floating Live Horological Dial & Scroll Indicator -->
-  <aside class="scroll-time-badge" id="scroll-time-badge" aria-label="Live horological caliber indicator">
-    <div class="mini-clock-dial" aria-hidden="true">
-      <div class="mini-hand hand-hour" id="clock-hand-hour"></div>
-      <div class="mini-hand hand-minute" id="clock-hand-min"></div>
-      <div class="mini-hand hand-second" id="clock-hand-sec"></div>
-      <div class="mini-center-pin"></div>
-    </div>
-    <div class="time-meta">
-      <span class="time-live" id="live-time-display">10:10:00</span>
-      <span class="time-calibre" id="scroll-depth-display">0% SCROLL</span>
-    </div>
-  </aside>
 
   <!-- Navigation Bar -->
   <header class="site-header" id="site-header">
@@ -45,9 +31,8 @@
     </div>
   </header>
 
-  <!-- Hero Section with Background Video & Kinetic Typography -->
+  <!-- Hero Section -->
   <section class="hero-section" id="hero">
-    <!-- Background Video & Luxury Dark Golden Overlay -->
     <div class="hero-video-wrapper">
       <video class="hero-bg-video" id="hero-bg-video" autoplay muted loop playsinline poster="assets/images/hero-watch.jpg">
         <source src="assets/videos/hero-bg.mp4" type="video/mp4">
@@ -55,118 +40,60 @@
       <div class="hero-video-overlay"></div>
     </div>
 
-    <!-- Parallax Watermark Words in Hero -->
-    <div class="watermark-strip watermark-hero" id="watermark-hero" aria-hidden="true">
-      PRECISION &bull; HOROLOGY &bull; CALIBER &bull; TIMELESS &bull; RAADO ATELIER
-    </div>
-
     <div class="container hero-grid">
-      <div class="hero-content anim-reveal-up">
-        <span class="hero-badge">Curated Horology</span>
+      <div class="hero-content">
+        <span class="hero-badge">Curated Horology &bull; Dynamic Themes</span>
         <h1 class="hero-headline">
-          <span class="word-reveal">Precision</span> Meets 
-          <span class="word-reveal-accent">Timeless Style</span>
+          Precision Meets <span>Timeless Style</span>
         </h1>
         <p class="hero-intro">
-          RAADO WATCH crafts timepieces that honor traditional horological mastery while embracing clean modern aesthetics. Each second is an enduring statement of refined elegance.
+          RAADO WATCH crafts timepieces that honor traditional horological mastery while embracing clean modern aesthetics. Each design commands its own visual theme, metallurgy, and character.
         </p>
         <div class="hero-actions">
           <a href="#collection" class="btn btn-primary" id="explore-collection-btn">Explore Collection</a>
-          <a href="#about" class="btn btn-outline-light" id="learn-more-btn">Our Story</a>
-          <button class="video-toggle-btn" id="video-toggle-btn" aria-label="Pause or play ambient hero video">
-            <span class="video-btn-icon" id="video-btn-icon">⏸</span>
-            <span class="video-btn-label">Ambient Motion</span>
-          </button>
+          <a href="#about" class="btn btn-outline" id="learn-more-btn">Our Story</a>
         </div>
       </div>
-      <div class="hero-image-wrapper anim-reveal-scale">
+      <div class="hero-image-wrapper">
         <div class="image-frame" id="hero-image-frame">
           <img src="assets/images/hero-watch.jpg" alt="RAADO Signature Luxury Timepiece" class="hero-img zoomable-image" id="hero-watch-img" title="Click to view full screen">
-          <span class="image-zoom-hint" aria-hidden="true">🔍 Click to Expand</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Featured Collection Section with Scroll Parallax Words -->
+  <!-- Featured Collection Section with Category Filters -->
   <section class="collection-section" id="collection">
-    <!-- Animated Horizontal Words in Collection Background -->
-    <div class="watermark-strip watermark-collection" id="watermark-collection" aria-hidden="true">
-      CHRONOGRAPH &bull; CLASSIC DRESS &bull; MINIMALIST TITANIUM &bull; SAPPHIRE AUTOMATIC
-    </div>
-
     <div class="container">
-      <div class="section-header anim-on-scroll">
+      <div class="section-header">
         <span class="section-subtitle">Exquisite Craftsmanship</span>
-        <h2 class="section-title">Featured Timepieces</h2>
+        <h2 class="section-title">The Timepiece Catalogue</h2>
         <p class="section-description">
-          Discover our trio of signature designs, each engineered with exceptional balance, durability, and quiet luxury. Click any image or button to inspect.
+          Each watch controls its own unique color palette, typography, and animation identity. Select a category or inspect any timepiece below.
         </p>
       </div>
 
+      <!-- Live Category Filter Buttons -->
+      <div class="catalogue-filters" id="catalogue-filters">
+        <button class="filter-btn is-active" data-filter="all">All Models (5)</button>
+        <button class="filter-btn" data-filter="heritage">Heritage Dress</button>
+        <button class="filter-btn" data-filter="chronograph">Chronograph</button>
+        <button class="filter-btn" data-filter="minimal">Minimalist</button>
+        <button class="filter-btn" data-filter="luxury">Haute Gold</button>
+        <button class="filter-btn" data-filter="diver">Diver Ocean</button>
+      </div>
+
+      <!-- Dynamic Product Cards Grid -->
       <div class="product-grid" id="product-grid">
-        <!-- Product 1: Classic Watch -->
-        <article class="product-card anim-on-scroll" id="product-card-classic" data-delay="0">
-          <div class="product-image-container">
-            <img src="assets/images/classic-watch.jpg" alt="Classic Watch" class="product-image zoomable-image" loading="lazy" title="Click to expand high-res watch image">
-            <span class="product-tag">Bestseller</span>
-            <span class="image-hover-glass">🔍 Zoom View</span>
-          </div>
-          <div class="product-info">
-            <h3 class="product-name">Classic Watch</h3>
-            <p class="product-snippet">Rose-gold bezel, Roman numeral dial, and genuine alligator-texture calfskin strap.</p>
-            <div class="product-bottom">
-              <span class="product-price">$350</span>
-              <button class="btn btn-small view-details-btn" id="btn-view-classic" data-product="classic">View Details</button>
-            </div>
-          </div>
-        </article>
-
-        <!-- Product 2: Sport Watch -->
-        <article class="product-card anim-on-scroll" id="product-card-sport" data-delay="150">
-          <div class="product-image-container">
-            <img src="assets/images/sport-watch.jpg" alt="Sport Watch" class="product-image zoomable-image" loading="lazy" title="Click to expand high-res watch image">
-            <span class="product-tag">High Performance</span>
-            <span class="image-hover-glass">🔍 Zoom View</span>
-          </div>
-          <div class="product-info">
-            <h3 class="product-name">Sport Watch</h3>
-            <p class="product-snippet">Carbon fiber dial, precision tachymeter, and ergonomic waterproof rubber strap.</p>
-            <div class="product-bottom">
-              <span class="product-price">$420</span>
-              <button class="btn btn-small view-details-btn" id="btn-view-sport" data-product="sport">View Details</button>
-            </div>
-          </div>
-        </article>
-
-        <!-- Product 3: Minimalist Watch -->
-        <article class="product-card anim-on-scroll" id="product-card-minimalist" data-delay="300">
-          <div class="product-image-container">
-            <img src="assets/images/minimalist-watch.jpg" alt="Minimalist Watch" class="product-image zoomable-image" loading="lazy" title="Click to expand high-res watch image">
-            <span class="product-tag">Modern</span>
-            <span class="image-hover-glass">🔍 Zoom View</span>
-          </div>
-          <div class="product-info">
-            <h3 class="product-name">Minimalist Watch</h3>
-            <p class="product-snippet">Ultra-slim profile, clean monochrome dial, and stainless steel Milanese mesh band.</p>
-            <div class="product-bottom">
-              <span class="product-price">$290</span>
-              <button class="btn btn-small view-details-btn" id="btn-view-minimalist" data-product="minimalist">View Details</button>
-            </div>
-          </div>
-        </article>
+        <!-- Rendered dynamically by script.js from products-data.js with HTML fallback -->
       </div>
     </div>
   </section>
 
-  <!-- About Us Section with Horology Quote -->
+  <!-- About Us Section -->
   <section class="about-section" id="about">
-    <div class="watermark-strip watermark-about" id="watermark-about" aria-hidden="true">
-      HOROLOGICAL TRADITION &bull; TIMELESS HARMONY &bull; RAADO STUDIOS
-    </div>
-
     <div class="container about-grid">
-      <div class="about-text anim-on-scroll">
+      <div class="about-text">
         <span class="section-subtitle">The Atelier</span>
         <h2 class="section-title">The Art of Mindful Watchmaking</h2>
         <p>
@@ -178,7 +105,7 @@
         <div class="about-highlights">
           <div class="highlight-item">
             <h4>Sapphire Crystal</h4>
-            <p>Scratch-resistant glass with dual anti-reflective coating.</p>
+            <p>Scratch-resistant synthetic corundum with dual anti-reflective coating.</p>
           </div>
           <div class="highlight-item">
             <h4>Precision Caliber</h4>
@@ -186,7 +113,7 @@
           </div>
         </div>
       </div>
-      <div class="about-card anim-on-scroll">
+      <div class="about-card">
         <div class="quote-box">
           <p class="quote-text">"A timepiece is a quiet companion through life's most meaningful moments."</p>
           <span class="quote-author">— The RAADO Studio</span>
@@ -198,7 +125,7 @@
   <!-- Contact & Fictional Disclaimer Section -->
   <section class="contact-section" id="contact">
     <div class="container contact-container">
-      <div class="section-header anim-on-scroll">
+      <div class="section-header">
         <span class="section-subtitle">Get In Touch</span>
         <h2 class="section-title">Customer Concierge</h2>
         <p class="section-description">
@@ -207,11 +134,11 @@
       </div>
 
       <!-- Fictional Brand Notice Banner -->
-      <div class="disclaimer-banner anim-on-scroll" id="disclaimer-banner">
+      <div class="disclaimer-banner" id="disclaimer-banner">
         <strong>Educational Demo Notice:</strong> RAADO WATCH is a 100% fictional brand created solely for a web development learning exercise. It has no affiliation with any commercial watch enterprise. No products are sold and no real inquiries are processed.
       </div>
 
-      <div class="contact-card anim-on-scroll">
+      <div class="contact-card">
         <div class="contact-details">
           <div class="contact-item">
             <span class="contact-label">Demo Email Address:</span>
@@ -254,17 +181,17 @@
     </div>
   </footer>
 
-  <!-- Product Details Modal -->
+  <!-- Product Details Themed Modal -->
   <div class="modal-backdrop" id="product-modal" aria-hidden="true" role="dialog" aria-labelledby="modal-title">
     <div class="modal-card">
       <button class="modal-close-btn" id="modal-close-btn" aria-label="Close product details">&times;</button>
       <div class="modal-body" id="modal-body">
-        <!-- Populated dynamically via script.js -->
+        <!-- Injected dynamically via script.js -->
       </div>
     </div>
   </div>
 
-  <!-- High-Res Image Lightbox Modal for Open Images View -->
+  <!-- Full-Screen Image Lightbox -->
   <div class="image-lightbox-backdrop" id="image-lightbox" aria-hidden="true" role="dialog" aria-label="Watch Image Inspection">
     <div class="lightbox-content">
       <button class="lightbox-close-btn" id="lightbox-close-btn" aria-label="Close image view">&times;</button>
@@ -273,6 +200,8 @@
     </div>
   </div>
 
+  <!-- Centralized Data Store & Client Logic -->
+  <script src="products-data.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
